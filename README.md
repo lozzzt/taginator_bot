@@ -1,13 +1,23 @@
 # Зарегистрировать бота
 
 У `@BotFather` создать нового бота (`/newbot`), получить токен.
-Токен вставить в config.yaml
+Токен вставить в config.yaml или передать в командной строке при запуске (предпочтительно)
 
 # Установить зависимости:
 ```pip install -r requirements.txt```
 
 # Запустить
 ```sudo python ./main.py```
+
+# Запуск в виртуальной среде
+
+```sh
+mkdir -p /home/bots
+python3 -m venv /home/bots
+source /home/bots/bin/activate
+pip install -r requirements.txt
+python3 -m path/to/tag_bot/main.py 'BOT_TOKEN'
+```
 
 # Описание бота
 
