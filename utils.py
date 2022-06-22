@@ -5,6 +5,7 @@ import logging
 import yaml
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from aiogram.types.user import User
 import re
 
 # Singleton
@@ -61,9 +62,18 @@ class MyBot(object):
         self.bot = Bot(token=Config().get_bot_token())
         self.dp = Dispatcher(self.bot, storage=self.storage)
         self.aliases = {}
+        self.users = {}
 
     def get_bot(self):
         return self.bot, self.dp
+
+    def register_user(self, user: User) -> None:
+        if not self.users.get(user.mention):
+            self.users[user.mention] = user.id
+
+    def unregister_user(self, user: User) -> None:
+        if self.users.get(user.mention):
+            self.users[user.mention] = None
 
     def get_aliases(self, user: str) -> list:
         if user:
@@ -78,7 +88,7 @@ class MyBot(object):
         self.aliases[user] = list(set(self.aliases.get(user))) if self.aliases.get(user) else []
         self.aliases.get(user).extend(list(set(aliases)))
 
-class Utils(object):
+class RegexpUtils(object):
 
     def __init__(self, pattern: str):
         self.pattern = pattern
