@@ -69,7 +69,8 @@ class MyBot(object):
 
     def register_user(self, user: User) -> None:
         if not self.users.get(user.mention):
-            self.users[user.mention] = user.id
+            mention = user.mention if user.username else "[" + user.first_name + "](" + user.url + ")"
+            self.users[user.mention] = {'id': user.id, 'mention': mention}
 
     def unregister_user(self, user: User) -> None:
         if self.users.get(user.mention):
