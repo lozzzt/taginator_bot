@@ -13,7 +13,7 @@ utils = RegexpUtils(pattern = "[\s\.,!\-]")
 def register_handler(message):
     re_aliases = "\\b" + "|\\b".join(mybot.get_aliases(message.from_user.mention))
     if len(mybot.get_aliases(message.from_user.mention)) > 0:
-        dp.register_message_handler(tag, lambda message: len(re.findall(re_aliases, message.text, re.IGNORECASE)) > 0, content_types=[types.ContentType.TEXT])
+        dp.register_message_handler(tag, lambda message: len(re.findall(re_aliases, message.text, re.IGNORECASE)) > 0)
 
 COMMANDS_MSG = {
     'start': 'Трепещать! Призыватель-инатор запущен для Вас, ',
@@ -24,6 +24,7 @@ COMMANDS_MSG = {
     'add_aliases': 'Добавлены слова, на которые Вас призовут.',
     'add_aliases_error': 'Необходимо задать слова. Например: \n`/add_aliases@taginator_bot Имя Фамилия`',
     'leave_chat': 'Включён самоуничтожитель Призыватель-инатора',
+    'leave_chat_error': 'Нельзя покинуть личку',
     'stop': 'Призыватель-инатор остановлен для Вас, '
 }
 
@@ -51,9 +52,12 @@ async def cmd_stop(message: types.Message):
 
 @dp.message_handler(commands=['leave_chat'])
 async def cmd_leave_chat(message: types.Message):
-    await message.answer(COMMANDS_MSG['leave_chat'])
-    await asyncio.sleep(1)
-    await bot.leave_chat(message.chat.id)
+    if message.chat.type == 'private':
+        await message.answer(COMMANDS_MSG['leave_chat_error'])
+    else:
+        await message.answer(COMMANDS_MSG['leave_chat'])
+        await asyncio.sleep(1)
+        await bot.leave_chat(message.chat.id)
 
 @dp.message_handler(commands=['set_aliases'])
 async def cmd_set_aliases(message: types.Message):
